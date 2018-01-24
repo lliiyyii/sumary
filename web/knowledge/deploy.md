@@ -309,6 +309,7 @@ formData.append("file",$("#file")[0]);
 formData.append("file",$("#file")[0].files[0]);
 ```
 2.在ajax的属性里添加```processData: false,```
+
 3.我最后的请求为
 ```javascript
   $("#btnFile").click(function () {
@@ -337,7 +338,7 @@ formData.append("file",$("#file")[0].files[0]);
             error: alert("Error")
         });
     })
-    ```
+ ```
     
     
 > ### 写在最后的话
