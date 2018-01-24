@@ -272,6 +272,24 @@ public class FilterConfig {
 3.方法是在太暴力，没有研究两个函数的作用，后面项目处理文件的bug留坑
 
 
+### xml方式使用mybatis的错误No typehandler found for property XXX
+#### 错误描述
+   >这个部分是项目新加的功能 
+   前面是各种包的错误，最后都是一样，指向一个xml文件的错误，其实很简单，只是我太智障了，我用谷歌翻译后是“找不到属性文件的类型处理程序”结果，其实file是我的变量名，囧，所以意识是file变量的java类型和数据库类型不匹配
+
+#### 报错信息
+```
+No typehandler found for property file
+```
+其实是
+```
+...... No typehandler found for property XXX
+```
+#### 解决方法
+将file变量的数据库类型和java类型对应，我的是把原来的MultipleFile改成String，数据库依然是varchar，就可以了。
+
+
+
 > ### 写在最后的话
 > 老师还要改前端的字，好像好多字是动态生成的，解决了继续写，呀呀呀
 
