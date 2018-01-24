@@ -289,7 +289,55 @@ No typehandler found for property file
 将file变量的数据库类型和java类型对应，我的是把原来的MultipleFile改成String，数据库依然是varchar，就可以了。
 
 
+### ajax使用时报错
+#### 问题描述
+使用ajax上传文件时报错
 
+#### 报错信息
+```
+Uncaught TypeError: Illegal invocation
+```
+
+#### 解决方法
+1.查看data里的数据是否真的有效，这里有两种file上传的方法
+```javascript
+ var  formData = new FormData();
+formData.append("file",$("#file")[0]);
+```
+```javascript
+ var  formData = new FormData();
+formData.append("file",$("#file")[0].files[0]);
+```
+2.在ajax的属性里添加```processData: false,```
+3.我最后的请求为
+```javascript
+  $("#btnFile").click(function () {
+        var  formData = new FormData();
+        formData.append("file",$("#file")[0]);
+        $.ajax({
+            cache: true,
+            type: "POST",
+            dataType: 'json',
+            contentType: "form-data",
+            processData: false,
+            async: false,
+            url: "${webRoot}/demo/approved/upload",
+            data: formData,
+            beforeSend:function(){
+                console.log("正在进行，请稍候");
+            },
+
+            success: function(responseStr) {
+                if(responseStr.status===0){
+                    console.log("成功"+responseStr);
+                }else{
+                    console.log("失败");
+                }
+            },
+            error: alert("Error")
+        });
+    })
+    ···
 > ### 写在最后的话
 > 老师还要改前端的字，好像好多字是动态生成的，解决了继续写，呀呀呀
 
