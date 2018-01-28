@@ -340,8 +340,88 @@ formData.append("file",$("#file")[0].files[0]);
     })
  ```
     
-    
+    
+### 解决上传文件时400，required request part file is not present的问题
+#### 错误描述
+spring boot使用MultipartFile类型做上传文件是，方法同原来写的spring boot中的方法一样，但是总是出问题，解决了四天还没有解决，现在解决了后台问题，前端问题还没解决。
+
+#### 报错信息
+```
+{
+    "timestamp": 1517142211343,
+    "status": 400,
+    "error": "Bad Request",
+    "exception": "org.springframework.web.multipart.support.MissingServletRequestPartException",
+    "message": "Required request part 'file' is not present",
+    "path": "/demo/approved/upload"
+}
+```
+
+#### 解决方法
+1.应该是配置的问题，所以增加配置，尝试多个以后发现这个有用
+```java
+@Bean
+public CommonsMultipartResolver multipartResolver() {
+	CommonsMultipartResolver multipart = new CommonsMultipartResolver();
+	multipart.setMaxUploadSize(3 * 1024 * 1024);
+	return multipart;
+}
+
+	@Bean
+	@Order(0)
+	public MultipartFilter multipartFilter() {
+		MultipartFilter multipartFilter = new MultipartFilter();
+		multipartFilter.setMultipartResolverBeanName("multipartResolver");
+		return multipartFilter;
+	}
+```
+2.在返回的函数名前添加```@ResponseBody```，我更改后的上传文件的函数变为
+```java
+ @PostMapping(value = "upload",consumes = "multipart/form-data")
+    @RequiresPermissions("act:model:all")
+    public @ResponseBody BaseApi myupload (HttpServletRequest request,
+                           @RequestParam(value = "myfile") MultipartFile file) throws Exception{
+
+//        log.info("进入upload"+tag);
+        try{
+            String filename = file.getOriginalFilename();
+            String path = request.getServletContext().getRealPath("/files/");
+            log.info("文件名字是 "+filename+" 文件路径是 "+path);
+            File filepath = new File(path,filename);
+            //判断路径是否存在，如果不存在就创建一个
+            if (!filepath.getParentFile().exists()) {
+                filepath.getParentFile().mkdirs();
+            }
+            //将上传文件保存到一个目标文件当中
+            file.transferTo(new File(path + File.separator + filename));
+            //返回文件的路径
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("path",path+File.separator+filename);
+            return new BaseApi("ok",0,jsonObject);
+        }catch (Exception e){
+            log.info("出错");
+            e.printStackTrace();
+            return new BaseApi("error",1,null);
+        }
+
+    }
+```
+3.不知道有没有用，但是我增加了一个包
+```yml
+<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web-services</artifactId>
+</dependency>
+```
+
+4.贴上解决这个问题的网址：https://stackoverflow.com/questions/43936372/upload-file-springboot-required-request-part-file-is-not-present
+
+
+
 > ### 写在最后的话
+> 上面那个问题前端有些问题，待解决。。。噗
+>
 > 老师还要改前端的字，好像好多字是动态生成的，解决了继续写，呀呀呀
 
 
