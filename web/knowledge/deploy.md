@@ -310,7 +310,7 @@ formData.append("file",$("#file")[0].files[0]);
 ```
 2.在ajax的属性里添加```processData: false,```
 
-3.我最后的请求为
+3.我最后的请求为****后面一个问题这个代码有问题后又有更改*****
 ```javascript
   $("#btnFile").click(function () {
         var  formData = new FormData();
@@ -343,7 +343,7 @@ formData.append("file",$("#file")[0].files[0]);
     
 ### 解决上传文件时400，required request part file is not present的问题
 #### 错误描述
-spring boot使用MultipartFile类型做上传文件是，方法同原来写的spring boot中的方法一样，但是总是出问题，解决了四天还没有解决，现在解决了后台问题，前端问题还没解决。
+spring boot使用MultipartFile类型做上传文件是，方法同原来写的spring boot中的方法一样，但是总是出问题，解决了四天还没有解决，现在解决了。
 
 #### 报错信息
 ```
@@ -417,11 +417,41 @@ public CommonsMultipartResolver multipartResolver() {
 
 4.贴上解决这个问题的网址：https://stackoverflow.com/questions/43936372/upload-file-springboot-required-request-part-file-is-not-present
 
+#### 这个问题前端失败的问题已经解决了
+##### 问题描述
+报错和后端的一样，原因是前端传文件的时候取的值不是文件
+##### 问题解决
+1.更改js就可以了，贴上代码
+```javascript
+ var fd = new FormData();
+        fd.append( "myfile", $("#myfile")[0].files[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "${webRoot}/demo/approved/upload",
+            data: fd,
+            contentType: false,
+            processData: false,
+            cache: false,
+            /*beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p");
+                settings.data = {name: "file", file: inputElement.files[0]};
+            },*/
+            success: function (result) {
+                if ( result.reseponseInfo == "SUCCESS" ) {
+
+                } else {
+
+                }
+            },
+            error: function (result) {
+                console.log(result.responseText);
+            }
+        });
+```
 
 
 > ### 写在最后的话
-> 上面那个问题前端有些问题，待解决。。。噗
->
 > 老师还要改前端的字，好像好多字是动态生成的，解决了继续写，呀呀呀
 
 
