@@ -55,7 +55,7 @@ Hadoop 可以在单节点上以伪分布式的方式运行，Hadoop 进程以分
 		        <name>dfs.permissions</name>
 		        <value>false</value>
 	      </property>
-</configuration
+</configuration>
  ```
 - 修改配置文件sbin/start-dfs.sh和stop-dfs.sh
 最前面添加
@@ -69,6 +69,12 @@ HDFS_SECONDARYNAMENODE_USER=root
 
 - 修改文件hadoop-env.sh(不在安装hadoop的地方，用find -name hadoop-env.sh)
 使用vi打开后寻址注释了的JAVA添加JAVA_HOME
+
+- ***bug：hadoop启动时提示 Permission denied (publickey,password,keyboard-interactive)***
+
+	1、ssh-keygen -t rsa  一路回车键
+
+	2、cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
 
 
 
